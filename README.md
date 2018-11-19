@@ -1,11 +1,17 @@
 # Goals
 
 * shared volume mount for dev
-* cached node_modules
+* cached node_modules so I don't need to re-install on every build of the container image.
+* cli dev tools on the dev image so that the dev environment is easily replicable
+* be able to run lb4 scaffolding commands within container cli, exit container, and not loose newly generated code.
+* be able to install additional modules within container cli, exit container, rebuild to have new mods added to image cache.
 * support dev / production differences
     * dev: install devDependencies; extra binaries
     * production: alpine linux; npm install --only production
 * 
+
+
+
 
 # Resources 
 
@@ -127,3 +133,6 @@ Next
 - get flyway migrate running
 - separate dev/test/prod yml setups?
 
+## Gotcha's 
+- cannot use host: 'localhost' or '127.0.0.1' for server listening host in container. must use '0.0.0.0' or omit for default value. See: https://stackoverflow.com/questions/35414479/docker-ports-are-not-exposed
+- 

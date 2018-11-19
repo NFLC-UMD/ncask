@@ -10,8 +10,8 @@ app.get('/', function(req, res) {
     res.send('Hello me');
 });
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 app.listen(port, function() {
-    logger.info(`"${appName}" is listening on: ${port}`);
+    logger.info('APP Express listening on:' + port);
 });

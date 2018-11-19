@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# docker run -d -p 3001:3001 --name apilb4 api-lb4
+docker run -d -p 3211:3001 --name apilb4 api-lb4
