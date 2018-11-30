@@ -1,0 +1,7 @@
+#!/bin/bash
+
+docker build api-lb4
+docker tag $(docker images --filter=dangling=true --filter "label=dev=true" -q) api-lb4:latestdev
+docker rmi $(docker images --filter=dangling=true --filter "label=builder=true" -q)
+docker tag $(docker images --filter=dangling=true --filter "label=production=true" -q) api-lb4:latest
+

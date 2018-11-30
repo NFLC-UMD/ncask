@@ -1,7 +1,9 @@
-FROM node:8 AS dev
+ARG NODE_VERSION=8
+
+FROM node:${NODE_VERSION} AS dev
+LABEL dev=true
 RUN groupadd -r nodejs && useradd -m -r -g nodejs -s /bin/bash nodejs
-ENV TINI_VERSION v0.18.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini /tini
 RUN chmod +x /tini
 ENV NODE_ENV=development
 RUN mkdir /usr/src/cache
@@ -11,6 +13,7 @@ RUN npm install
 RUN chown -R nodejs:nodejs node_modules
 RUN npm install -g @loopback/cli
 WORKDIR /home/nodejs/app
+RUN chown nodejs /home/nodejs/app
 COPY --chown=nodejs:nodejs . .
 RUN /bin/echo -e "#!/bin/bash\ncp -r /usr/src/cache/node_modules/. /home/nodejs/app/node_modules/ && cd /home/nodejs/app && npm start" > /usr/local/bin/onstartup.sh && chmod 777 /usr/local/bin/onstartup.sh
 EXPOSE 3001
@@ -18,18 +21,26 @@ USER nodejs
 ENTRYPOINT ["/tini", "--"]
 CMD ["/usr/local/bin/onstartup.sh"]
 
-# run production builds on Alpine linux
-# FROM node:8-alpine AS production
-# # addgroup doesn't exist in alpine linux
-# RUN addgroup nodejs && useradd -m -r -g nodejs -s /bin/bash nodejs
-# ENV TINI_VERSION v0.18.0
-# RUN apk add --no-cache tini
-# ENV NODE_ENV=production
-# WORKDIR /home/nodejs/app
-# COPY --chown=nodejs:nodejs . .
-# RUN npm install --only=production
-# RUN chown -R nodejs:nodejs node_modules
-# USER nodejs
-# EXPOSE 3001
-# ENTRYPOINT ["/sbin/tini", "--"]
-# CMD ["npm", "start"]
+FROM node:${NODE_VERSION}-alpine AS builder
+LABEL builder=true
+WORKDIR /tmp/build
+COPY . .
+COPY --from=dev /usr/src/cache .
+RUN npm run build:production
+
+FROM node:${NODE_VERSION}-alpine AS production
+LABEL production=true
+RUN apk update && apk upgrade && apk add bash && apk add shadow
+RUN groupadd -r nodejs && useradd -m -r -g nodejs -s /bin/bash nodejs
+RUN apk add --no-cache tini
+WORKDIR /home/nodejs/app
+RUN chown nodejs /home/nodejs/app && mkdir dist && chown nodejs dist
+COPY --chown=nodejs:nodejs package*.json .
+COPY --chown=nodejs:nodejs index.js .
+ENV NODE_ENV=production
+RUN npm install
+COPY --chown=nodejs:nodejs --from=builder /tmp/build/dist ./dist
+USER nodejs
+EXPOSE 3001
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["node", "index.js"]

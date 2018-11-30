@@ -1,7 +1,7 @@
 {
-  "name": "chloe",
+  "name": "lb4app",
   "version": "1.0.0",
-  "description": "chloe",
+  "description": "LoopbackJs 4 app",
   "keywords": [
     "loopback-application",
     "loopback"
@@ -11,8 +11,9 @@
     "node": ">=8.9"
   },
   "scripts": {
-    "build:apidocs": "lb-apidocs",
+    "build:apidocs": "lb-apidocs -o public",
     "build": "lb-tsc es2017 --outDir dist",
+    "build:production": "lb-tsc es2017 --project tsconfig.production.json --outDir dist",
     "build:watch": "lb-tsc --watch",
     "clean": "lb-clean dist",
     "lint": "npm run prettier:check && npm run tslint",

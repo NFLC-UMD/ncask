@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker run -v `pwd`/api-lb4:/home/nodejs/app -d -p 4001:3001 --name api-lb4-dev api-lb4:latestdev
