@@ -1,4 +1,4 @@
-import {ChloeApplication} from '../..';
+import {Lb2toLb4DemoApp} from '../..';
 import {
   createRestAppClient,
   givenHttpServerConfig,
@@ -6,7 +6,7 @@ import {
 } from '@loopback/testlab';
 
 export async function setupApplication(): Promise<AppWithClient> {
-  const app = new ChloeApplication({
+  const app = new Lb2toLb4DemoApp({
     rest: givenHttpServerConfig(),
   });
 
@@ -19,6 +19,6 @@ export async function setupApplication(): Promise<AppWithClient> {
 }
 
 export interface AppWithClient {
-  app: ChloeApplication;
+  app: Lb2toLb4DemoApp;
   client: Client;
 }

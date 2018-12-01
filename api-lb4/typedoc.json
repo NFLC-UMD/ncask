@@ -1,0 +1,19 @@
+{
+    "name": "API Documentation",
+    "readme": "README.md",
+    "mode": "modules",
+    "out": "public/docs",
+    "media": "media",
+    "theme": "default",
+    "ignoreCompilerErrors": "true",
+    "experimentalDecorators": "true",
+    "emitDecoratorMetadata": "true",
+    "excludeExternals": "true",
+    "target": "ES5",
+    "moduleResolution": "node",
+    "preserveConstEnums": "true",
+    "stripInternal": "true",
+    "suppressExcessPropertyErrors": "true",
+    "suppressImplicitAnyIndexErrors": "true",
+    "module": "commonjs"
+  }

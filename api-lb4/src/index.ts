@@ -1,10 +1,10 @@
-import {ChloeApplication} from './application';
+import {Lb2toLb4DemoApp} from './application';
 import {ApplicationConfig} from '@loopback/core';
 
-export {ChloeApplication};
+export {Lb2toLb4DemoApp};
 
 export async function main(options: ApplicationConfig = {}) {
-  const app = new ChloeApplication(options);
+  const app = new Lb2toLb4DemoApp(options);
   await app.boot();
   await app.start();
 

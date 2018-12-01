@@ -4,11 +4,11 @@
 // License text available at https://opensource.org/licenses/MIT
 
 import {Client} from '@loopback/testlab';
-import {ChloeApplication} from '../..';
+import {Lb2toLb4DemoApp} from '../..';
 import {setupApplication} from './test-helper';
 
 describe('HomePage', () => {
-  let app: ChloeApplication;
+  let app: Lb2toLb4DemoApp;
   let client: Client;
 
   before('setupApplication', async () => {
@@ -24,5 +24,13 @@ describe('HomePage', () => {
       .get('/')
       .expect(200)
       .expect('Content-Type', /text\/html/);
+  });
+
+  it('exposes self-hosted explorer', async () => {
+    await client
+      .get('/explorer/')
+      .expect(200)
+      .expect('Content-Type', /text\/html/)
+      .expect(/<title>LoopBack API Explorer/);
   });
 });
