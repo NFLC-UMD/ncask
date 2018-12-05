@@ -62,6 +62,7 @@ api-docs/
 
 # Transpiled JavaScript files from Typescript
 /dist
+/dist8
 
 /public
 /media

@@ -15,21 +15,21 @@ RUN npm install -g @loopback/cli
 WORKDIR /home/nodejs/app
 RUN chown nodejs /home/nodejs/app
 COPY --chown=nodejs:nodejs . .
-RUN /bin/echo -e "#!/bin/bash\ncp -r /usr/src/cache/node_modules/. /home/nodejs/app/node_modules/ && cd /home/nodejs/app && npm start" > /usr/local/bin/onstartup.sh && chmod 777 /usr/local/bin/onstartup.sh
+RUN /bin/echo -e "#!/bin/bash\ncp -r /usr/src/cache/node_modules/. /home/nodejs/app/node_modules/ && cd /home/nodejs/app && npm run clean && npm run build:watch" > /usr/local/bin/onstartup.sh && chmod 777 /usr/local/bin/onstartup.sh
 EXPOSE 3001
 USER nodejs
 ENTRYPOINT ["/tini", "--"]
 CMD ["/usr/local/bin/onstartup.sh"]
 
-FROM node:${NODE_VERSION}-alpine AS builder
-LABEL builder=true
+FROM node:${NODE_VERSION}-alpine AS build
+LABEL build=true
 WORKDIR /tmp/build
 COPY . .
 COPY --from=dev /usr/src/cache .
 RUN npm run build:production
 
-FROM node:${NODE_VERSION}-alpine AS production
-LABEL production=true
+FROM node:${NODE_VERSION}-alpine AS deploy
+LABEL deploy=true
 RUN apk update && apk upgrade && apk add bash && apk add shadow
 RUN groupadd -r nodejs && useradd -m -r -g nodejs -s /bin/bash nodejs
 RUN apk add --no-cache tini
@@ -39,7 +39,7 @@ COPY --chown=nodejs:nodejs package*.json .
 COPY --chown=nodejs:nodejs index.js .
 ENV NODE_ENV=production
 RUN npm install
-COPY --chown=nodejs:nodejs --from=builder /tmp/build/dist ./dist
+COPY --chown=nodejs:nodejs --from=build /tmp/build/dist ./dist
 USER nodejs
 EXPOSE 3001
 ENTRYPOINT ["/sbin/tini", "--"]

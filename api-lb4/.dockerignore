@@ -1,4 +1,5 @@
 node_modules/*
 dist/*
+dist8/*
 public/*
 npm-debug.log
