@@ -1,20 +1,20 @@
 version: '3.4'
 
 services:
-  # api-lb4:
-  #   build: 
-  #     context: ./api-lb4
-  #     target: dev
-  #   volumes:
-  #     - ./api-lb4:/home/nodejs/app
-  #   expose:
-  #     - "3001"
-  #   ports:
-  #     - "3001:3001"
-  api-express:
+  api-lb4:
     build: 
-      context: ./api-express
-      target: dev
-    volumes:
-      - ./api-express:/home/nodejs/app
+      context: ./api-lb4
+      target: deploy
+    image: api-lb4:latest
+    expose: 
+      - "3001"
+    ports:
+      - "3001:3001"
+  gateway:
+    build: ./gateway
+    image: gateway:latest
+    links:
+      - "api-lb4:lb4api"
+    ports:
+      - "8080:8080"
 

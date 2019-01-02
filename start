@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Assumes the last started container is api-lb4-dev
+docker exec -ti api-lb4-dev sh -c "DEBUG=loopback:* node index.js"

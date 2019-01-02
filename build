@@ -1,7 +1,23 @@
 #!/bin/bash
 
+# uses ./api-lb4/Dockerfile
 docker build api-lb4
+
+# tag the new created 'dangling' dev image (i.e. tag = <none>)
 docker tag $(docker images --filter=dangling=true --filter "label=dev=true" -q) api-lb4:latestdev
+
+# when the new one is tagged, the old one becomes a dangling image which we can now remove
+docker rmi $(docker images --filter=dangling=true --filter "label=dev=true" -q)
+
+# remove the build image
 docker rmi $(docker images --filter=dangling=true --filter "label=build=true" -q)
+
+# again here with the deploy image; i.e. tag the new one, then remove the old
 docker tag $(docker images --filter=dangling=true --filter "label=deploy=true" -q) api-lb4:latest
+docker rmi $(docker images --filter=dangling=true --filter "label=deploy=true" -q)
+
+docker build gateway
+
+docker tag $(docker images --filter=dangling=true --filter "label=gateway=true" -q) gateway:latest
+docker rmi $(docker images --filter=dangling=true --filter "label=gateway=true" -q)
 

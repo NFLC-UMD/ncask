@@ -5,17 +5,15 @@ LABEL dev=true
 RUN groupadd -r nodejs && useradd -m -r -g nodejs -s /bin/bash nodejs
 ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini /tini
 RUN chmod +x /tini
-ENV NODE_ENV=development
-RUN mkdir /usr/src/cache
 WORKDIR /usr/src/cache
 COPY package*.json .
-RUN npm install
-RUN chown -R nodejs:nodejs node_modules
+ENV NODE_ENV=development
+RUN npm install && chown -R nodejs:nodejs node_modules
 RUN npm install -g @loopback/cli
 WORKDIR /home/nodejs/app
 RUN chown nodejs /home/nodejs/app
 COPY --chown=nodejs:nodejs . .
-RUN /bin/echo -e "#!/bin/bash\ncp -r /usr/src/cache/node_modules/. /home/nodejs/app/node_modules/ && cd /home/nodejs/app && npm run clean && npm run build:watch" > /usr/local/bin/onstartup.sh && chmod 777 /usr/local/bin/onstartup.sh
+RUN /bin/echo -e "#!/bin/bash\ncp -r /usr/src/cache/node_modules/. /home/nodejs/app/node_modules/ && cd /home/nodejs/app && npm install && npm run ctr:start" > /usr/local/bin/onstartup.sh && chmod 777 /usr/local/bin/onstartup.sh
 EXPOSE 3001
 USER nodejs
 ENTRYPOINT ["/tini", "--"]

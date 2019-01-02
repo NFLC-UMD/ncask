@@ -13,7 +13,7 @@
   "scripts": {
     "build:apidocs": "typedoc --options typedoc.json",
     "build": "lb-tsc es2017 --outDir dist",
-    "build:production": "lb-tsc es2017 --project tsconfig.production.json --outDir dist",
+    "build:production": "npm run clean && lb-tsc es2017 --project tsconfig.production.json --outDir dist",
     "build:watch": "lb-tsc --watch --outDir dist",
     "clean": "lb-clean dist",
     "lint": "npm run prettier:check && npm run tslint",
@@ -27,8 +27,9 @@
     "test": "lb-mocha --allow-console-logs \"dist/test\"",
     "posttest": "npm run lint",
     "test:dev": "lb-mocha --allow-console-logs dist/test/**/*.js && npm run posttest",
-    "prestart": "npm run build:watch",
+    "prestart": "npm run clean && npm run build",
     "start": "node .",
+    "ctr:start": "npm run clean && npm run build:watch",
     "prepublishOnly": "npm run test"
   },
   "repository": {

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker container stop api-lb4-dev
